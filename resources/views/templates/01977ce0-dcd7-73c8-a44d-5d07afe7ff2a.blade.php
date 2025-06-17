@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Pernikahan</title>
+    <title>{{ $title??'' }} - Undangan Pernikahan</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -12,17 +12,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <!-- AOS CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v1">
+   <link rel="stylesheet" href="{{ asset('assets/'.$template->id.'/style.css?v1') }}">
     <style>
         
     </style>
 </head>
 <body>
     <!-- Opening Screen -->
-    <div class="opening-screen">
+    <div class="opening-screen" style="
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{{ $other['background']? asset($other['background']):'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3' }}');
+    ">
         <div class="opening-content">
             <h1 class="opening-title">Undangan Pernikahan</h1>
-            <p class="opening-subtitle">Kepada Yth.<br>Bapak/Ibu/Saudara/i</p>
+            <p class="opening-subtitle">Kepada Yth.<br>Bapak/Ibu/Saudara/i
+            <br>
+            {{ $to??"Fulan" }}
+            </p>
             <button class="open-button">Buka Undangan</button>
         </div>
     </div>
@@ -30,10 +35,12 @@
     <!-- Main Content -->
     <div class="main-content" style="display: none;">
         <!-- Hero Section -->
-        <section class="hero-section">
+        <section class="hero-section" style="
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{{ $other['background']? asset($other['background']):'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3' }}');
+    ">
             <div class="hero-content">
-                <h1 class="couple-names">Rizki & Putri</h1>
-                <p class="wedding-date">Minggu, 1 Januari 2024</p>
+                <h1 class="couple-names">{{ $groom['nickname'] }} & {{ $bride['nickname'] }}</h1>
+                <p class="wedding-date">{{ $closest['dateFormated'] }}</p>
                 <p class="lead">Kami mengundang Anda untuk merayakan hari pernikahan kami</p>
             </div>
         </section>
@@ -46,15 +53,15 @@
                     <div class="col-md-6">
                         <div class="couple-card" data-aos="fade-right">
                             <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3" alt="Groom" class="couple-image">
-                            <h3 class="couple-name">Rizki</h3>
-                            <p class="couple-parents">Putra dari Bapak Abdullah & Ibu Aminah</p>
+                            <h3 class="couple-name">{{ $groom['name'] }}</h3>
+                            <p class="couple-parents">Putra dari Bapak {{ $groom['father'] }} & Ibu {{ $groom['mother'] }}</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="couple-card" data-aos="fade-left">
                             <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3" alt="Bride" class="couple-image">
-                            <h3 class="couple-name">Putri</h3>
-                            <p class="couple-parents">Putri dari Bapak Rahman & Ibu Fatimah</p>
+                            <h3 class="couple-name">{{ $bride['name'] }}</h3>
+                            <p class="couple-parents">Putri dari Bapak {{ $bride['father'] }} & Ibu {{ $bride['mother'] }}</p>
                         </div>
                     </div>
                 </div>
@@ -66,46 +73,28 @@
             <div class="container">
                 <h2 class="section-title">Detail Acara</h2>
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="event-card" data-aos="fade-up">
-                            <h3 class="event-title">Akad Nikah</h3>
-                            <div class="event-info">
-                                <i class="fas fa-calendar"></i> Minggu, 1 Januari 2024
+                    @foreach($locations as $location)
+                    	<div class="col-md-6">
+                            <div class="event-card" data-aos="fade-up">
+                                <h3 class="event-title">{{ $location['name'] }}</h3>
+                                <div class="event-info">
+                                    <i class="fas fa-calendar"></i> {{ date('d M Y', strtotime($location['date'])) }}
+                                </div>
+                                <div class="event-info">
+                                    <i class="fas fa-clock"></i> {{ date('H:i', strtotime($location['date'])) }}
+                                </div>
+                                <div class="event-info">
+                                    <i class="fas fa-map-marker-alt"></i> {{ $location['location'] }}
+                                </div>
+                                <div class="event-info">
+                                    <i class="fas fa-location-arrow"></i> {{ $location['address'] }}
+                                </div>
+                                <a href="{{ $location['maps'] }}" target="_blank" class="btn btn-outline-primary mt-3">
+                                    <i class="fas fa-map-marked-alt"></i> Buka di Maps
+                                </a>
                             </div>
-                            <div class="event-info">
-                                <i class="fas fa-clock"></i> 08:00 WIB
-                            </div>
-                            <div class="event-info">
-                                <i class="fas fa-map-marker-alt"></i> Masjid Al-Hidayah
-                            </div>
-                            <div class="event-info">
-                                <i class="fas fa-location-arrow"></i> Jl. Merdeka No. 123, Jakarta
-                            </div>
-                            <a href="https://maps.google.com" target="_blank" class="btn btn-outline-primary mt-3">
-                                <i class="fas fa-map-marked-alt"></i> Buka di Maps
-                            </a>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="event-card" data-aos="fade-up" data-aos-delay="100">
-                            <h3 class="event-title">Resepsi</h3>
-                            <div class="event-info">
-                                <i class="fas fa-calendar"></i> Minggu, 1 Januari 2024
-                            </div>
-                            <div class="event-info">
-                                <i class="fas fa-clock"></i> 11:00 - 17:00 WIB
-                            </div>
-                            <div class="event-info">
-                                <i class="fas fa-map-marker-alt"></i> Gedung Serbaguna
-                            </div>
-                            <div class="event-info">
-                                <i class="fas fa-location-arrow"></i> Jl. Sudirman No. 456, Jakarta
-                            </div>
-                            <a href="https://maps.google.com" target="_blank" class="btn btn-outline-primary mt-3">
-                                <i class="fas fa-map-marked-alt"></i> Buka di Maps
-                            </a>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </section>
@@ -115,21 +104,14 @@
             <div class="container">
                 <h2 class="section-title">Galeri Foto</h2>
                 <div class="row">
-                    <div class="col-md-4">
+                    @foreach($gallery as $gal)
+                    <div class="col-md-4 col-sm-6">
                         <div class="gallery-item" data-aos="zoom-in">
-                            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3" alt="Gallery Image">
+                            <img src="{{ asset($gal) }}" alt="Gallery Image">
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="gallery-item" data-aos="zoom-in" data-aos-delay="100">
-                            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3" alt="Gallery Image">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="gallery-item" data-aos="zoom-in" data-aos-delay="200">
-                            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3" alt="Gallery Image">
-                        </div>
-                    </div>
+                    @endforeach
+                    
                 </div>
             </div>
         </section>
@@ -191,7 +173,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="script.js"></script>
+   <script src="{{ asset('assets/'.$template->id.'/script.js?v1') }}"></script>
     
     <script>
        

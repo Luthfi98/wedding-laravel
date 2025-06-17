@@ -119,28 +119,30 @@ class SettingController extends Controller implements HasMiddleware
             DB::beginTransaction();
 
             if ($request->type == 'code') {
-                $folderPath = resource_path('views/customs');
+                $path = 'views/customs';
+                $folderPath = resource_path($path);
                 if (!file_exists($folderPath)) {
                     mkdir($folderPath, 0777, true);
                 }
-                $path = $folderPath . '/' . $request->name . '.blade.php';
+                $filePath = $folderPath . '/' . $request->name . '.blade.php';
 
-                file_put_contents($path, $request->value);
-
-                $request->value = $path;
+                file_put_contents($filePath, $request->value);
+                $request->value = $path.'/'.$request->name.'.blade.php';
             }
 
             if ($request->type == 'file') {
-                $folderPath = public_path('uploads/settings');
+               $path = 'uploads/settings';
+                $folderPath = public_path($path);
                 if (!file_exists($folderPath)) {
                     mkdir($folderPath, 0777, true);
                 }
                 $file = $request->file('value');
                 $filename = $request->name . '.' . $file->getClientOriginalExtension();
-                $path = $folderPath . '/' . $filename;
-                $file->move($path, $filename);
+                $pathFile = $folderPath . '/' . $filename;
 
-                $request->value = $path;
+                $file->move($folderPath, $filename);
+
+                $request->value = $path.'/'.$filename;
             }
 
             $setting = Setting::create([
@@ -187,7 +189,29 @@ class SettingController extends Controller implements HasMiddleware
      */
     public function edit(string $id)
     {
-        //
+        $setting = Setting::findOrFail($id);
+        if ($setting->type == 'code') {
+            $phpPath = resource_path($setting->value);
+            if (file_exists($phpPath)) {
+                $setting->value = file_get_contents($phpPath);
+            }
+        }
+        $data = [   
+            'title' => __('Edit Setting'),
+            'setting' => $setting,
+            'types' => [
+                'text' => 'Text',
+                'number' => 'Number',
+                'file' => 'File',
+                'select' => 'Select',
+                'textarea' => 'Textarea',
+                'code' => 'Code',
+                'radio' => 'Radio',
+                'checkbox' => 'Checkbox'
+            ]
+        ];
+        
+        return view('cms.settings.edit')->with($data);
     }
 
     /**
@@ -195,7 +219,88 @@ class SettingController extends Controller implements HasMiddleware
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|in:text,number,file,select,textarea,code,radio,checkbox',
+            'value' => 'required',
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $setting = Setting::findOrFail($id);
+            $oldValue = $setting->value;
+
+            if ($request->type == 'code') {
+                $path = 'views/customs';
+                $folderPath = resource_path($path);
+                
+                if (!is_dir($folderPath)) {
+                    mkdir($folderPath, 0777, true);
+                }
+                
+                $filePath = $folderPath . '/' . $request->name . '.blade.php';
+
+                // Delete old file if it exists and is a file
+                if (is_string($oldValue) && file_exists(resource_path($oldValue)) && is_file(resource_path($oldValue))) {
+                    @unlink(resource_path($oldValue));
+                }
+
+                file_put_contents($filePath, $request->value);
+                $request->value = $path . '/' . $request->name . '.blade.php';
+            }
+
+            if ($request->type == 'file' && $request->hasFile('value')) {
+                $path = 'uploads/settings';
+                $folderPath = public_path($path);
+                if (!file_exists($folderPath)) {
+                    mkdir($folderPath, 0777, true);
+                }
+                $file = $request->file('value');
+                $filename = $request->name . '.' . $file->getClientOriginalExtension();
+                $pathFile = $folderPath . '/' . $filename;
+
+                // Delete old file if exists
+                if (is_string($oldValue) && file_exists($oldValue)) {
+                    @unlink($oldValue);
+                }
+
+                $file->move($folderPath, $filename);
+
+                $request->value = $path.'/'.$filename;
+
+            }
+
+            $setting->update([
+                'name' => $request->name,
+                'type' => $request->type,
+                'value' => $request->value,
+                'status' => $request->status
+            ]);
+
+            DB::commit();
+
+            return redirect()
+                ->route('settings.index')
+                ->with('success', __('Setting updated successfully'));
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            // Clean up any created files if needed
+            if ($request->type == 'code' && isset($path)) {
+                @unlink($path);
+            }
+            if ($request->type == 'file' && isset($path)) {
+                @unlink($path);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', __('Failed to update setting: ') . $e->getMessage());
+        }
     }
 
     /**

@@ -14,51 +14,59 @@ use App\Http\Controllers\Cms\TemplateController;
 use App\Http\Controllers\Cms\DashboardController;
 use App\Http\Controllers\Cms\PermissionController;
 use App\Http\Controllers\Cms\LogActivityController;
+use App\Http\Controllers\Cms\SettingController;
 
 Route::get('/', function () {
-    $client = \App\Models\Client::firstOrFail();
-    $template = \App\Models\Template::firstOrFail();
-    $dataCL = $client['data'];
-    $dataLocation = $dataCL['locations'];
-    $dataGroom = $dataCL['groom'];
-    $dataBride = $dataCL['bride'];
-    $dataGallery = $dataCL['gallery'];
-    $dataBank = $dataCL['bank_accounts']; 
-    $dataStory = $dataCL['stories'];  
-    $dataOther = $dataCL['other']; 
+    // $client = \App\Models\Client::firstOrFail();
+    // $template = \App\Models\Template::firstOrFail();
+    // $dataCL = $client['data'];
+    // $dataLocation = $dataCL['locations'];
+    // $dataGroom = $dataCL['groom'];
+    // $dataBride = $dataCL['bride'];
+    // $dataGallery = $dataCL['gallery'];
+    // $dataBank = $dataCL['bank_accounts']; 
+    // $dataStory = $dataCL['stories'];  
+    // $dataOther = $dataCL['other']; 
 
-    $now = Carbon::now();
+    // $now = Carbon::now();
 
 
-    $collection = collect($dataLocation);
+    // $collection = collect($dataLocation);
 
-    // Cari tanggal terdekat (bisa sebelum atau sesudah)
-    $closest = $collection->sortBy(function ($item) use ($now) {
-        return abs($now->diffInSeconds(Carbon::parse($item['date']), false));
-    })->first();
+    // // Cari tanggal terdekat (bisa sebelum atau sesudah)
+    // $closest = $collection->sortBy(function ($item) use ($now) {
+    //     return abs($now->diffInSeconds(Carbon::parse($item['date']), false));
+    // })->first();
 
-    $closest['date'] = Carbon::parse($closest['date'])->locale('id_ID')->format('l, j F Y');
-    $closest['dateFormated'] = str_replace(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'], $closest['date']);
-    $closest['dateFormated'] = str_replace(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'], $closest['date']);
-    // $date = Carbon::parse($closest['date'])->locale('id_ID')->isoFormat('d F Y, l');
-    // dd($dataBank);
+    // $closest['date'] = Carbon::parse($closest['date'])->locale('id_ID')->format('l, j F Y');
+    // $closest['dateFormated'] = str_replace(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    //     ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'], $closest['date']);
+    // $closest['dateFormated'] = str_replace(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    //     ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'], $closest['date']);
+    // // $date = Carbon::parse($closest['date'])->locale('id_ID')->isoFormat('d F Y, l');
+    // // dd($dataBank);
+    // $data = [
+    //     'title' => $client->name,
+    //     'client' => $client,
+    //     'template' => $template,
+    //     'to' => 'HIMATEKINFO',
+    //     'closest' => $closest,
+    //     'groom' => $dataGroom,
+    //     'bride' => $dataBride,
+    //     'gallery' => $dataGallery,
+    //     'bank' => $dataBank,
+    //     'location' => $dataLocation,
+    //     'story' => $dataStory,
+    //     'other' => $dataOther
+    // ];
+    // return view('templates.'.$template->id)->with($data);
+    $settingModel = new \App\Models\Setting();
+    $setting = $settingModel::where('name', 'layouts_landing')->first();
+    $logo = $settingModel::where('name', 'logo_website')->first();
     $data = [
-        'title' => $client->name,
-        'client' => $client,
-        'template' => $template,
-        'to' => 'HIMATEKINFO',
-        'closest' => $closest,
-        'groom' => $dataGroom,
-        'bride' => $dataBride,
-        'gallery' => $dataGallery,
-        'bank' => $dataBank,
-        'location' => $dataLocation,
-        'story' => $dataStory,
-        'other' => $dataOther
+        'logo' => $logo
     ];
-    return view('templates.'.$template->id)->with($data);
+    return view( $setting ?  str_replace(['.blade.php', 'views/'], '', $setting->value) : 'layouts.landing' )->with($data);
 });
 
 
@@ -168,6 +176,16 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('delete/{id}', [BankController::class, 'destroy'])->name('banks.delete');
     });
 
+    Route::prefix('settings')->group(function () {
+        Route::get('/', [SettingController::class, 'index'])->name('settings.index');
+        Route::get('data', [SettingController::class, 'getData'])->name('settings.data');
+        Route::get('create', [SettingController::class, 'create'])->name('settings.create');
+        Route::post('store', [SettingController::class, 'store'])->name('settings.store');
+        Route::get('edit/{id}', [SettingController::class, 'edit'])->name('settings.edit');
+        Route::put('update/{id}', [SettingController::class, 'update'])->name('settings.update');
+        Route::delete('delete/{id}', [SettingController::class, 'destroy'])->name('settings.delete');
+    });
+
     Route::prefix('log-activity')->group(function () {
         Route::get('/', [LogActivityController::class, 'index'])->name('log-activity.index');
         Route::get('data', [LogActivityController::class, 'getData'])->name('log-activity.data');
@@ -216,7 +234,7 @@ Route::get('/{any}', function ($any) {
         'bride' => $dataBride,
         'gallery' => $dataGallery,
         'bank' => $dataBank,
-        'location' => $dataLocation,
+        'locations' => $dataLocation,
         'story' => $dataStory,
         'other' => $dataOther
     ];

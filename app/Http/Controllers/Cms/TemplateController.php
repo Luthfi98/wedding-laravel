@@ -333,15 +333,15 @@ class TemplateController extends Controller implements HasMiddleware
         $request->validate([
             'php_content' => 'required|string'
         ]);
-
+        
         $template = Template::findOrFail($id);
         $templatePath = resource_path('views/templates/' . $id . '.blade.php');
         
-        if (!file_exists($templatePath)) {
-            mkdir(dirname($templatePath), 0755, true);
-        }
-
+        // if (!dirname($templatePath)) {
+        //     mkdir(dirname($templatePath), 0755, true);
+        // }
         file_put_contents($templatePath, $request->php_content);
+
 
         $fileContent = $template->file_content ?? [];
         $fileContent['php'] = 'views/templates/' . $id . '.blade.php';

@@ -55,7 +55,9 @@
     <!-- Main Content -->
     <div class="main-content" style="display: none;">
         <!-- Hero Section -->
-        <section id="home" class="hero-section">
+        <section id="home" class="hero-section" style="
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{{ $other['background']? asset($other['background']):'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3' }}');
+    ">
             <div class="container">
                 <h1 class="couple-names">{{ $groom['nickname'] }} & {{$bride['nickname']}}</h1>
                 <p class="date-venue">{{ $closest['dateFormated'] }}</p>
@@ -78,7 +80,7 @@
                     <div class="col-md-6">
                         <div class="couple-card">
                             <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3" alt="Bride">
-                            <h3>Siti</h3>
+                            <h3>{{ $bride['name'] }}</h3>
                             <p>Putri dari Bapak {{ $bride['father'] }} & Ibu {{ $bride['mother'] }}</p>
                         </div>
                     </div>
