@@ -1,0 +1,106 @@
+/* DataTable Theme Customization */
+.dataTables_wrapper {
+    color: var(--text-color);
+}
+
+/* Table Header */
+.dataTables_wrapper .dataTable thead th {
+    background-color: var(--table-header-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+/* Table Body */
+.dataTables_wrapper .dataTable tbody td {
+    background-color: var(--table-body-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+/* Table Row */
+.dataTables_wrapper .dataTable tbody tr {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* Table Hover */
+.dataTables_wrapper .dataTable tbody tr:hover {
+    background-color: var(--hover-bg) !important;
+    color: var(--text-color-hover);
+}
+
+/* Striped Rows */
+.dataTables_wrapper .dataTable tbody tr:nth-child(even) {
+    background-color: var(--hover-bg-soft);
+}
+
+/* Search Input */
+.dataTables_wrapper .dataTables_filter input {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem var(--accent-soft);
+}
+
+/* Length Select */
+.dataTables_wrapper .dataTables_length select {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+.dataTables_wrapper .dataTables_length select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem var(--accent-soft);
+}
+
+/* Pagination */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: var(--card-bg);
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: var(--accent-color) !important;
+    color: white !important;
+    border-color: var(--accent-color) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: var(--accent-hover) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Processing */
+.dataTables_processing {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+/* Empty Message */
+.dataTables_empty {
+    color: var(--text-muted);
+}
+
+/* Info Text */
+.dataTables_info {
+    color: var(--text-muted);
+}
+
+/* Length Label */
+.dataTables_length label {
+    color: var(--text-color);
+}
+
+/* Length Select Options */
+.dataTables_length select option {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+} 
