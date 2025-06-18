@@ -52,7 +52,7 @@
                     { data: "DT_RowIndex", searchable: false},
                     { data: "name" },
                     { data: "description" },
-                    { data: "created_by", name: 'createdBy.name', defaultContent : ''},
+                    { data: "created_by.name", name: 'createdBy.name', defaultContent : ''},
                     { data: "status" },
                     { data: "action", orderable: false, searchable: false }
                 ],

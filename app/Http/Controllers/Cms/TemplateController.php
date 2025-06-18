@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Cms;
 
+use App\Models\Template;
+use App\Models\LogActivity;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use App\Models\Template;
-use Yajra\DataTables\DataTables;
 
 class TemplateController extends Controller implements HasMiddleware
 {
@@ -151,6 +152,9 @@ class TemplateController extends Controller implements HasMiddleware
         $template->file_content = $fileContent;
         $template->save();
 
+        LogActivity::insertData($template->toArray(), $template->getTable());
+
+
         return redirect()->route('templates.index')->with('success', __('Template created successfully'));
     }
 
@@ -231,6 +235,8 @@ class TemplateController extends Controller implements HasMiddleware
         $template->status = $request->status;
         $template->save();
 
+        LogActivity::insertData($template->toArray(), $template->getTable());
+
         return response()->json([
             'success' => true,
             'message' => __('Template updated successfully')
@@ -262,6 +268,8 @@ class TemplateController extends Controller implements HasMiddleware
         $template->file_content = $fileContent;
         $template->save();
 
+        LogActivity::insertData($fileContent, $template->getTable());
+
         return response()->json([
             'success' => true,
             'message' => __('HTML content updated successfully')
@@ -291,6 +299,8 @@ class TemplateController extends Controller implements HasMiddleware
         $fileContent['css'] = 'assets/' . $template->id . '/style.css';
         $template->file_content = $fileContent;
         $template->save();
+        LogActivity::insertData($fileContent, $template->getTable());
+
 
         return response()->json([
             'success' => true,
@@ -321,6 +331,8 @@ class TemplateController extends Controller implements HasMiddleware
         $fileContent['js'] = 'assets/' . $template->id . '/script.js';
         $template->file_content = $fileContent;
         $template->save();
+        LogActivity::insertData($fileContent, $template->getTable());
+
 
         return response()->json([
             'success' => true,
@@ -347,6 +359,8 @@ class TemplateController extends Controller implements HasMiddleware
         $fileContent['php'] = 'views/templates/' . $id . '.blade.php';
         $template->file_content = $fileContent;
         $template->save();
+        LogActivity::insertData($fileContent, $template->getTable());
+
 
         return response()->json([
             'success' => true,
@@ -374,6 +388,8 @@ class TemplateController extends Controller implements HasMiddleware
         }
 
         $template->delete();
+        LogActivity::insertData($template->toArray(), $template->getTable());
+
         return response()->json(['success' => true, 'message' => __('Template deleted successfully')]);
     }
 }

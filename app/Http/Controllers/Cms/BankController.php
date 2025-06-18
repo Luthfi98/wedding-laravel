@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Cms;
 
 use App\Models\Bank;
+use App\Models\LogActivity;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use Yajra\DataTables\Facades\DataTables;
 
 class BankController extends Controller implements HasMiddleware
 {
@@ -109,7 +110,10 @@ class BankController extends Controller implements HasMiddleware
             $data['image'] = 'uploads/banks/' . $imageName;
         }
 
-        Bank::create($data);
+        $bank = Bank::create($data);
+
+        LogActivity::insertData($data, $bank->getTable());
+
 
         return redirect()->route('banks.index')
             ->with('success', __('Bank created successfully.'));
@@ -174,6 +178,9 @@ class BankController extends Controller implements HasMiddleware
 
         $bank->update($data);
 
+        LogActivity::insertData($data, $bank->getTable());
+
+
         return redirect()->route('banks.index')
             ->with('success', __('Bank updated successfully.'));
     }
@@ -191,6 +198,8 @@ class BankController extends Controller implements HasMiddleware
         // }
 
         $bank->delete();
+        LogActivity::insertData($bank->toArray(), $bank->getTable());
+
 
         return response()->json([
             'success' => true,

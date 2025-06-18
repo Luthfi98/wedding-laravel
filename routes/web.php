@@ -60,13 +60,13 @@ Route::get('/', function () {
     //     'other' => $dataOther
     // ];
     // return view('templates.'.$template->id)->with($data);
-    $settingModel = new \App\Models\Setting();
-    $setting = $settingModel::where('name', 'layouts_landing')->first();
-    $logo = $settingModel::where('name', 'logo_website')->first();
+    $settings = \App\Models\Setting::whereIn('name', ['layouts_landing', 'logo_website', 'favicon_website', 'website_name'])->get()->keyBy('name');
     $data = [
-        'logo' => $logo
+        'logo' => $settings->get('logo_website')?->value,
+        'favicon' => $settings->get('favicon_website')?->value,
+        'name' => $settings->get('website_name')?->value
     ];
-    return view( $setting ?  str_replace(['.blade.php', 'views/'], '', $setting->value) : 'layouts.landing' )->with($data);
+    return view($settings->get('layouts_landing') ? str_replace(['.blade.php', 'views/'], '', $settings->get('layouts_landing')->value) : 'layouts.landing')->with($data);
 });
 
 
@@ -159,6 +159,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('data', [ClientController::class, 'getData'])->name('clients.data');
         Route::get('create', [ClientController::class, 'create'])->name('clients.create');
         Route::post('store', [ClientController::class, 'store'])->name('clients.store');
+        Route::get('show/{id}', [ClientController::class, 'show'])->name('clients.show');
         Route::get('edit/{id}', [ClientController::class, 'edit'])->name('clients.edit');
         Route::put('update/{id}', [ClientController::class, 'update'])->name('clients.update');
         Route::delete('delete/{id}', [ClientController::class, 'destroy'])->name('clients.delete');

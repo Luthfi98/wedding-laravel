@@ -58,7 +58,7 @@
                     { data: "name" },
                     { data: "email" },
                     { data: "phone" },
-                    { data: "created_by", name: 'createdBy.name', defaultContent : ''},
+                    { data: "created_by.name", name: 'createdBy.name', defaultContent : ''},
                     { 
                         data: "status",
                         render: function(data) {

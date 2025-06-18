@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Cms;
 
-use App\Http\Controllers\Controller;
+use App\Models\Setting;
+use App\Models\LogActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use App\Models\Setting;
-use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\DB;
 
 class SettingController extends Controller implements HasMiddleware
 {
@@ -152,6 +153,8 @@ class SettingController extends Controller implements HasMiddleware
                 'status' => $request->status
             ]);
 
+            LogActivity::insertData($setting->toArray(), $setting->getTable());
+
             DB::commit();
 
             return redirect()
@@ -279,6 +282,9 @@ class SettingController extends Controller implements HasMiddleware
                 'status' => $request->status
             ]);
 
+            LogActivity::insertData($setting->toArray(), $setting->getTable());
+
+
             DB::commit();
 
             return redirect()
@@ -308,6 +314,15 @@ class SettingController extends Controller implements HasMiddleware
      */
     public function destroy(string $id)
     {
-        //
+        $setting = Setting::findOrFail($id);
+        $setting->delete();
+
+        LogActivity::insertData($setting->toArray(), $setting->getTable());
+
+
+        return response()->json([
+            'success' => true,
+            'message' => __('Setting deleted successfully')
+        ]);
     }
 }

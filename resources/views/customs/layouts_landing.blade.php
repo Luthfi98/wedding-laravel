@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-     <link rel="icon" type="image/x-icon" href="{{ asset($logo->value) }}">
+     <link rel="icon" type="image/x-icon" href="{{ asset($favicon) }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Undangan Digital Modern - Buat undangan digital yang elegan dan mudah dibagikan. Tersedia berbagai template menarik dengan harga terjangkau.">
     <meta name="keywords" content="undangan digital, undangan online, template undangan, undangan pernikahan digital, undangan ulang tahun digital">
@@ -13,7 +13,15 @@
 <body>
     <header>
         <nav class="container">
-            <div class="logo">Undangan Digital</div>
+            <div class="logo">
+                <img src="{{ asset($logo) }}" style="height: 50px; vertical-align: middle;"/>
+                <span style="vertical-align: middle; display: inline-block;">{{ $name }}</span>
+                {{-- <img src="{{ asset($logo) }}" 
+     style="height: 50px; vertical-align: middle; 
+            clip-path: path('M24.5,4.5c-5.2,-7.3 -17.2,-3.8 -17.2,5.2c0,9.6 17.2,19.8 17.2,19.8s17.2,-10.2 17.2,-19.8c0,-9 -12,-12.5 -17.2,-5.2z');
+            -webkit-clip-path: path('M24.5,4.5c-5.2,-7.3 -17.2,-3.8 -17.2,5.2c0,9.6 17.2,19.8 17.2,19.8s17.2,-10.2 17.2,-19.8c0,-9 -12,-12.5 -17.2,-5.2z');"/> --}}
+
+            </div>
             <div class="desktop-nav">
                 <a href="#features">Fitur</a>
                 <a href="#templates">Template</a>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cms;
 use App\Models\Bank;
 use App\Models\Client;
 use App\Models\Template;
+use App\Models\LogActivity;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -54,7 +55,9 @@ class ClientController extends Controller implements HasMiddleware
                 ->addIndexColumn()
                 ->addColumn('action', function ($client) {
                     $btns = [];
-                    
+                    if (auth()->user()->can('detail client')) {
+                        $btns[] = '<li><a class="dropdown-item" href="' . route('clients.show', $client->id) . '"><i class="bi bi-eye"></i> Detail</a></li>';
+                    }
                     if (auth()->user()->can('update client')) {
                         $btns[] = '<li><a class="dropdown-item" href="' . route('clients.edit', $client->id) . '"><i class="bi bi-pencil"></i> Edit</a></li>';
                     }
@@ -88,6 +91,16 @@ class ClientController extends Controller implements HasMiddleware
         }
     }
 
+    public function show(string $id)
+    {
+        $client = Client::findOrFail($id);
+        $data = [
+            'title' => __('View Client'),
+            'client' => $client
+        ];
+        return view('cms.clients.show')->with($data);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -110,26 +123,7 @@ class ClientController extends Controller implements HasMiddleware
             'phone' => 'nullable|string|max:20',
             'slug' => 'nullable|string|max:255|unique:clients,slug',
             'status' => 'required|boolean',
-            'data.groom.name' => 'nullable|string|max:255',
-            'data.groom.father' => 'nullable|string|max:255',
-            'data.groom.mother' => 'nullable|string|max:255',
-            'data.groom.birth_order' => 'nullable|integer|min:1',
-            'data.groom.total_siblings' => 'nullable|integer|min:1',
-            'data.groom.instagram' => 'nullable|string|max:255',
-            'data.bride.name' => 'nullable|string|max:255',
-            'data.bride.father' => 'nullable|string|max:255',
-            'data.bride.mother' => 'nullable|string|max:255',
-            'data.bride.birth_order' => 'nullable|integer|min:1',
-            'data.bride.total_siblings' => 'nullable|integer|min:1',
-            'data.bride.instagram' => 'nullable|string|max:255',
-            'data.locations.*.name' => 'required|string|max:255',
-            'data.locations.*.date' => 'required|date',
-            'data.locations.*.location' => 'required|string',
-            'data.locations.*.maps' => 'nullable|url',
-            'data.gallery.*' => 'nullable|url',
-            'data.bank.name' => 'nullable|string|max:255',
-            'data.bank.account' => 'nullable|string|max:255',
-            'data.bank.holder' => 'nullable|string|max:255',
+           
         ]);
 
         $client = new Client();
@@ -142,61 +136,12 @@ class ClientController extends Controller implements HasMiddleware
 
         // Process data
         $data = [];
-        
-        // Couple data
-        if ($request->has('data.groom')) {
-            $data['groom'] = [
-                'name' => $request->input('data.groom.name'),
-                'father' => $request->input('data.groom.father'),
-                'mother' => $request->input('data.groom.mother'),
-                'birth_order' => $request->input('data.groom.birth_order'),
-                'total_siblings' => $request->input('data.groom.total_siblings'),
-                'instagram' => $request->input('data.groom.instagram'),
-            ];
-        }
-        
-        if ($request->has('data.bride')) {
-            $data['bride'] = [
-                'name' => $request->input('data.bride.name'),
-                'father' => $request->input('data.bride.father'),
-                'mother' => $request->input('data.bride.mother'),
-                'birth_order' => $request->input('data.bride.birth_order'),
-                'total_siblings' => $request->input('data.bride.total_siblings'),
-                'instagram' => $request->input('data.bride.instagram'),
-            ];
-        }
-
-        // Locations
-        if ($request->has('data.locations')) {
-            $data['locations'] = [];
-            foreach ($request->input('data.locations') as $location) {
-                if (!empty($location['name']) && !empty($location['date']) && !empty($location['location'])) {
-                    $data['locations'][] = [
-                        'name' => $location['name'],
-                        'date' => $location['date'],
-                        'location' => $location['location'],
-                        'maps' => $location['maps'] ?? null,
-                    ];
-                }
-            }
-        }
-
-        // Gallery
-        if ($request->has('data.gallery')) {
-            $data['gallery'] = $request->input('data.gallery');
-        }
-
-        // Bank data
-        if ($request->has('data.bank')) {
-            $data['bank'] = [
-                'name' => $request->input('data.bank.name'),
-                'account' => $request->input('data.bank.account'),
-                'holder' => $request->input('data.bank.holder'),
-            ];
-        }
-
+      
         $client->data = $data;
         $client->save();
+
+        LogActivity::insertData($client->toArray(), $client->getTable());
+
 
         return redirect()->route('clients.index')->with('success', __('Client created successfully'));
     }
@@ -428,6 +373,9 @@ class ClientController extends Controller implements HasMiddleware
         $client->data = $data;
         $client->save();
 
+        LogActivity::insertData($client->toArray(), $client->getTable());
+
+
         return redirect()->route('clients.edit', $client->id)->with('success', __('Client updated successfully'));
     }
 
@@ -438,6 +386,9 @@ class ClientController extends Controller implements HasMiddleware
     {
         $client = Client::findOrFail($id);
         $client->delete();
+
+        LogActivity::insertData($client->toArray(), $client->getTable());
+
 
         return response()->json([
             'success' => true,
