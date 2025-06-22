@@ -94,9 +94,15 @@ class ClientController extends Controller implements HasMiddleware
     public function show(string $id)
     {
         $client = Client::findOrFail($id);
+        $dataCl = $client['data'];
+        $banks = $dataCl['bank_accounts'];
+        $templates = Template::find($dataCl['other']['template_id']);
+        $dataCl['other']['template'] = $templates;
         $data = [
             'title' => __('View Client'),
-            'client' => $client
+            'client' => $client,
+            'data' => $dataCl,
+            'banks' => $banks
         ];
         return view('cms.clients.show')->with($data);
     }

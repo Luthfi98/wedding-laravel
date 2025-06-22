@@ -89,74 +89,74 @@
                             <h5>Groom</h5>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Name</label>
-                                <p class="form-control-plaintext">{{ $client->data['groom']['name'] ?? '-' }}</p>
+                                <p class="form-control-plaintext">{{ $data['groom']['name'] ?? '-' }}</p>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Nickname</label>
-                                <p class="form-control-plaintext">{{ $client->data['groom']['nickname'] ?? '-' }}</p>
+                                <p class="form-control-plaintext">{{ $data['groom']['nickname'] ?? '-' }}</p>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Father's Name</label>
-                                <p class="form-control-plaintext">{{ $client->data['groom']['father'] ?? '-' }}</p>
+                                <p class="form-control-plaintext">{{ $data['groom']['father'] ?? '-' }}</p>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Mother's Name</label>
-                                <p class="form-control-plaintext">{{ $client->data['groom']['mother'] ?? '-' }}</p>
+                                <p class="form-control-plaintext">{{ $data['groom']['mother'] ?? '-' }}</p>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Birth Order</label>
-                                        <p class="form-control-plaintext">{{ $client->data['groom']['birth_order'] ?? '-' }}</p>
+                                        <p class="form-control-plaintext">{{ $data['groom']['birth_order'] ?? '-' }}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Total Siblings</label>
-                                        <p class="form-control-plaintext">{{ $client->data['groom']['total_siblings'] ?? '-' }}</p>
+                                        <p class="form-control-plaintext">{{ $data['groom']['total_siblings'] ?? '-' }}</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Instagram</label>
-                                <p class="form-control-plaintext">{{ $client->data['groom']['instagram'] ?? '-' }}</p>
+                                <p class="form-control-plaintext">{{ $data['groom']['instagram'] ?? '-' }}</p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <h5>Bride</h5>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Name</label>
-                                <p class="form-control-plaintext">{{ $client->data['bride']['name'] ?? '-' }}</p>
+                                <p class="form-control-plaintext">{{ $data['bride']['name'] ?? '-' }}</p>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Nickname</label>
-                                <p class="form-control-plaintext">{{ $client->data['bride']['nickname'] ?? '-' }}</p>
+                                <p class="form-control-plaintext">{{ $data['bride']['nickname'] ?? '-' }}</p>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Father's Name</label>
-                                <p class="form-control-plaintext">{{ $client->data['bride']['father'] ?? '-' }}</p>
+                                <p class="form-control-plaintext">{{ $data['bride']['father'] ?? '-' }}</p>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Mother's Name</label>
-                                <p class="form-control-plaintext">{{ $client->data['bride']['mother'] ?? '-' }}</p>
+                                <p class="form-control-plaintext">{{ $data['bride']['mother'] ?? '-' }}</p>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Birth Order</label>
-                                        <p class="form-control-plaintext">{{ $client->data['bride']['birth_order'] ?? '-' }}</p>
+                                        <p class="form-control-plaintext">{{ $data['bride']['birth_order'] ?? '-' }}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Total Siblings</label>
-                                        <p class="form-control-plaintext">{{ $client->data['bride']['total_siblings'] ?? '-' }}</p>
+                                        <p class="form-control-plaintext">{{ $data['bride']['total_siblings'] ?? '-' }}</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Instagram</label>
-                                <p class="form-control-plaintext">{{ $client->data['bride']['instagram'] ?? '-' }}</p>
+                                <p class="form-control-plaintext">{{ $data['bride']['instagram'] ?? '-' }}</p>
                             </div>
                         </div>
                     </div>
@@ -166,7 +166,7 @@
                 <div class="tab-pane fade" id="story" role="tabpanel">
                     <h5 class="mb-3">Love Story</h5>
                     
-                    @if(isset($client->data['stories']) && is_array($client->data['stories']) && count($client->data['stories']) > 0)
+                    @if(isset($data['stories']) && is_array($data['stories']) && count($data['stories']) > 0)
                         <div class="table-responsive">
                             <table class="table table-bordered">
                                 <thead>
@@ -177,7 +177,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($client->data['stories'] as $story)
+                                    @foreach($data['stories'] as $story)
                                         <tr>
                                             <td>{{ $story['date'] ?? '-' }}</td>
                                             <td>{{ $story['title'] ?? '-' }}</td>
@@ -198,7 +198,7 @@
                 <div class="tab-pane fade" id="location" role="tabpanel">
                     <h5 class="mb-3">Event Locations</h5>
                     
-                    @if(isset($client->data['locations']) && is_array($client->data['locations']) && count($client->data['locations']) > 0)
+                    @if(isset($data['locations']) && is_array($data['locations']) && count($data['locations']) > 0)
                         <div class="table-responsive">
                             <table class="table table-bordered">
                                 <thead>
@@ -211,7 +211,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($client->data['locations'] as $location)
+                                    @foreach($data['locations'] as $location)
                                         <tr>
                                             <td>{{ $location['name'] ?? '-' }}</td>
                                             <td>{{ $location['date'] ?? '-' }}</td>
@@ -242,9 +242,9 @@
                 <div class="tab-pane fade" id="gallery" role="tabpanel">
                     <h5 class="mb-3">Gallery Images</h5>
                     
-                    @if(isset($client->data['gallery']) && is_array($client->data['gallery']) && count($client->data['gallery']) > 0)
+                    @if(isset($data['gallery']) && is_array($data['gallery']) && count($data['gallery']) > 0)
                         <div class="row" id="gallery-container">
-                            @foreach($client->data['gallery'] as $image)
+                            @foreach($data['gallery'] as $image)
                                 <div class="col-md-4 mb-3">
                                     <div class="card">
                                         <img src="{{ asset($image) }}" class="card-img-top" alt="Gallery image" style="height: 200px; object-fit: cover;">
@@ -263,7 +263,7 @@
                 <div class="tab-pane fade" id="bank" role="tabpanel">
                     <h5 class="mb-3">Bank Accounts</h5>
                     
-                    @if(isset($client->data['bank_accounts']) && is_array($client->data['bank_accounts']) && count($client->data['bank_accounts']) > 0)
+                    @if($banks)
                         <div class="table-responsive">
                             <table class="table table-bordered">
                                 <thead>
@@ -274,13 +274,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($client->data['bank_accounts'] as $account)
+                                    @foreach($banks as $account)
                                         <tr>
                                             <td>
-                                                @php
-                                                    $bank = $banks->where('code', $account['bank_name'])->first();
-                                                @endphp
-                                                {{ $bank ? $bank->name : ($account['bank_name'] ?? '-') }}
+                                                {{ $account['bank_name'] ?? '-' }}
                                             </td>
                                             <td>{{ $account['account_number'] ?? '-' }}</td>
                                             <td>{{ $account['account_holder'] ?? '-' }}</td>
@@ -302,9 +299,9 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Background</label>
-                                @if(isset($client->data['other']['background']) && $client->data['other']['background'])
+                                @if(isset($data['other']['background']) && $data['other']['background'])
                                     <div class="mt-2">
-                                        <img src="{{ asset($client->data['other']['background']) }}" alt="Background" class="img-thumbnail" style="max-height: 200px;">
+                                        <img src="{{ asset($data['other']['background']) }}" alt="Background" class="img-thumbnail" style="max-height: 200px;">
                                     </div>
                                 @else
                                     <p class="form-control-plaintext">-</p>
@@ -314,10 +311,10 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">File Song</label>
-                                @if(isset($client->data['other']['file_song']) && $client->data['other']['file_song'])
+                                @if(isset($data['other']['file_song']) && $data['other']['file_song'])
                                     <div class="mt-2">
                                         <audio controls>
-                                            <source src="{{ asset($client->data['other']['file_song']) }}" type="audio/mpeg">
+                                            <source src="{{ asset($data['other']['file_song']) }}" type="audio/mpeg">
                                             Your browser does not support the audio element.
                                         </audio>
                                     </div>
@@ -330,19 +327,17 @@
                     
                     <div class="mb-3">
                         <label class="form-label fw-bold">Template</label>
-                        @if(isset($client->data['other']['template_id']))
-                            @php
-                                $selectedTemplate = $templates->where('id', $client->data['other']['template_id'])->first();
-                            @endphp
-                            @if($selectedTemplate)
+                        @if(isset($data['other']['template_id']))
+
+                            @if($data['other']['template'])
                                 <div class="row">
                                     <div class="col-lg-4 col-md-6 col-sm-12 text-center">
                                         @php
-                                            $fileHtml = $selectedTemplate['file_content']['html'];
+                                            $fileHtml = $data['other']['template']['file_content']['html'];
                                         @endphp
                                         <iframe src="{{ asset($fileHtml) }}" style="width: 100%; height: 500px;"></iframe>
                                         <br>
-                                        <p class="mt-2 fw-bold">{{ $selectedTemplate->name }}</p>
+                                        <p class="mt-2 fw-bold">{{ $data['other']['template']->name }}</p>
                                     </div>
                                 </div>
                             @else
