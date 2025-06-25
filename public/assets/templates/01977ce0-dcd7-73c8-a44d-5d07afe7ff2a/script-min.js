@@ -1,0 +1,1 @@
+AOS.init({duration:1000,once:!0});$('.open-button').click(function(){$('.opening-screen').addClass('hide');setTimeout(function(){$('.main-content').fadeIn()},800)});document.querySelectorAll('a[href^="#"]').forEach(anchor=>{anchor.addEventListener('click',function(e){e.preventDefault();document.querySelector(this.getAttribute('href')).scrollIntoView({behavior:'smooth'})})})

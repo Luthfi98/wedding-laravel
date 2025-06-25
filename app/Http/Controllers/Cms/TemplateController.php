@@ -6,6 +6,7 @@ use App\Models\Template;
 use App\Models\LogActivity;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use MatthiasMullie\Minify;
 use App\Http\Controllers\Controller;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -120,7 +121,7 @@ class TemplateController extends Controller implements HasMiddleware
         $template->save();
 
         // Create directory for template files
-        $templatePath = public_path('assets/' . $template->id);
+        $templatePath = public_path('assets/templates/' . $template->id);
         if (!file_exists($templatePath)) {
             mkdir($templatePath, 0755, true);
         }
@@ -131,21 +132,21 @@ class TemplateController extends Controller implements HasMiddleware
             $htmlFile = $request->file('html_file');
             $htmlFileName = 'template.html';
             $htmlFile->move($templatePath, $htmlFileName);
-            $fileContent['html'] = 'assets/' . $template->id . '/' . $htmlFileName;
+            $fileContent['html'] = 'assets/templates/' . $template->id . '/' . $htmlFileName;
         }
 
         if ($request->hasFile('css_file')) {
             $cssFile = $request->file('css_file');
             $cssFileName = 'style.css';
             $cssFile->move($templatePath, $cssFileName);
-            $fileContent['css'] = 'assets/' . $template->id . '/' . $cssFileName;
+            $fileContent['css'] = 'assets/templates/' . $template->id . '/' . $cssFileName;
         }
 
         if ($request->hasFile('js_file')) {
             $jsFile = $request->file('js_file');
             $jsFileName = 'script.js';
             $jsFile->move($templatePath, $jsFileName);
-            $fileContent['js'] = 'assets/' . $template->id . '/' . $jsFileName;
+            $fileContent['js'] = 'assets/templates/' . $template->id . '/' . $jsFileName;
         }
 
         // Update template with file paths
@@ -253,7 +254,7 @@ class TemplateController extends Controller implements HasMiddleware
         ]);
 
         $template = Template::findOrFail($id);
-        $templatePath = public_path('assets/' . $template->id);
+        $templatePath = public_path('assets/templates/' . $template->id);
         
         if (!file_exists($templatePath)) {
             mkdir($templatePath, 0755, true);
@@ -264,7 +265,7 @@ class TemplateController extends Controller implements HasMiddleware
         file_put_contents($htmlPath, $request->html_content);
 
         $fileContent = $template->file_content ?? [];
-        $fileContent['html'] = 'assets/' . $template->id . '/template.html';
+        $fileContent['html'] = 'assets/templates/' . $template->id . '/template.html';
         $template->file_content = $fileContent;
         $template->save();
 
@@ -286,17 +287,25 @@ class TemplateController extends Controller implements HasMiddleware
         ]);
 
         $template = Template::findOrFail($id);
-        $templatePath = public_path('assets/' . $template->id);
+        $templatePath = public_path('assets/templates/' . $template->id);
         
         if (!file_exists($templatePath)) {
             mkdir($templatePath, 0755, true);
         }
 
-        $cssPath = $templatePath . '/style.css';
-        file_put_contents($cssPath, $request->css_content);
+        $cssPath = $templatePath . '/style';
+        // $minifiedCss = Minify::minify($request->css_content);
+
+        $minifier = new Minify\CSS();
+        $minifier->add($request->css_content);
+        $minifiedCss = $minifier->minify();
+
+
+        file_put_contents($cssPath.'-min.css', $minifiedCss);
+        file_put_contents($cssPath.'.css', $request->css_content);
 
         $fileContent = $template->file_content ?? [];
-        $fileContent['css'] = 'assets/' . $template->id . '/style.css';
+        $fileContent['css'] = 'assets/templates/' . $template->id . '/style.css';
         $template->file_content = $fileContent;
         $template->save();
         LogActivity::insertData($fileContent, $template->getTable());
@@ -318,17 +327,28 @@ class TemplateController extends Controller implements HasMiddleware
         ]);
 
         $template = Template::findOrFail($id);
-        $templatePath = public_path('assets/' . $template->id);
+        $templatePath = public_path('assets/templates/' . $template->id);
         
         if (!file_exists($templatePath)) {
             mkdir($templatePath, 0755, true);
         }
 
-        $jsPath = $templatePath . '/script.js';
+        $jsPath = $templatePath . '/script';
+
+        $minifier = new Minify\JS();
+        $minifier->add($request->js_content);
+        $minifiedjs = $minifier->minify();
+
+
+        file_put_contents($jsPath.'-min.js', $minifiedjs);
+        file_put_contents($jsPath.'.js', $request->js_content);
+        
+        
+        
         file_put_contents($jsPath, $request->js_content);
 
         $fileContent = $template->file_content ?? [];
-        $fileContent['js'] = 'assets/' . $template->id . '/script.js';
+        $fileContent['js'] = 'assets/templates/' . $template->id . '/script.js';
         $template->file_content = $fileContent;
         $template->save();
         LogActivity::insertData($fileContent, $template->getTable());
@@ -378,7 +398,7 @@ class TemplateController extends Controller implements HasMiddleware
         $template = Template::findOrFail($id);
         
         // Delete template files
-        $templatePath = public_path('assets/' . $template->id);
+        $templatePath = public_path('assets/templates/' . $template->id);
         if (file_exists($templatePath)) {
             $files = glob($templatePath . '/*');
             foreach ($files as $file) {

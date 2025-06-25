@@ -413,7 +413,7 @@
             const url = URL.createObjectURL(blob);
 
             // Set the iframe source
-            $('#previewFrame').attr('src', '{{ asset('assets/' . $template->id . '/template.html') }}');
+            $('#previewFrame').attr('src', '{{ asset('assets/templates/' . $template->id . '/template.html') }}');
 
             // Show the modal
             $('#previewModal').modal('show');

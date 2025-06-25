@@ -1,12 +1,26 @@
+@php
+	$webName = $settings->get('website_name')?->value;
+	$webLogo = $settings->get('logo_website')?->value;
+	$webFavicon = $settings->get('favicon_website')?->value;
+	$metaDescription = $settings->get('meta_description')?->value;
+	$metaKeywords = $settings->get('meta_keywords')?->value;
+	$metaTitle = $settings->get('meta_title')?->value;
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-     <link rel="icon" type="image/x-icon" href="{{ asset($favicon) }}">
+     <link rel="icon" type="image/x-icon" href="{{ asset($webFavicon) }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Undangan Digital Modern - Buat undangan digital yang elegan dan mudah dibagikan. Tersedia berbagai template menarik dengan harga terjangkau.">
-    <meta name="keywords" content="undangan digital, undangan online, template undangan, undangan pernikahan digital, undangan ulang tahun digital">
-    <title>Undangan Digital KUY - Solusi Modern untuk Acara Anda</title>
+    <meta name="description" content="{{ $metaDescription }}">
+    <meta name="keywords" content="{{ $metaKeywords }}">
+    
+    <meta property="og:title" content="{{ $metaTitle }}" />
+    <meta property="og:description" content="{{ $metaDescription }}" />
+    <meta property="og:image" content="{{ asset($webLogo) }}" /> <!-- ganti dengan URL gambar -->
+    <meta property="og:url" content="{{ url('/') }}" />
+    <meta property="og:type" content="website" />
+    <title>{{ $metaTitle }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/landing.css') }}">
 </head>
@@ -14,8 +28,8 @@
     <header>
         <nav class="container">
             <div class="logo">
-                <img src="{{ asset($logo) }}" style="height: 50px; vertical-align: middle;"/>
-                <span style="vertical-align: middle; display: inline-block;">{{ $name }}</span>
+                <img src="{{ asset($webLogo) }}" style="height: 50px; vertical-align: middle;"/>
+                <span style="vertical-align: middle; display: inline-block;">{{ $webName }}</span>
                 {{-- <img src="{{ asset($logo) }}" 
      style="height: 50px; vertical-align: middle; 
             clip-path: path('M24.5,4.5c-5.2,-7.3 -17.2,-3.8 -17.2,5.2c0,9.6 17.2,19.8 17.2,19.8s17.2,-10.2 17.2,-19.8c0,-9 -12,-12.5 -17.2,-5.2z');
@@ -23,7 +37,7 @@
 
             </div>
             <div class="desktop-nav">
-                <a href="#features">Fitur</a>
+                <a href="#features">Fiturnya</a>
                 <a href="#templates">Template</a>
                 <a href="#pricing">Harga</a>
                 <a href="#contact">Kontak</a>
@@ -76,6 +90,15 @@
         <div class="container">
             <h2 class="section-title">Template Undangan</h2>
             <div class="template-grid">
+                @foreach ($templates as $template)
+                <div class="template-card">
+                    <iframe src="{{ asset($template->file_content['html']) }}" frameborder="0" class="template-image" style="width: 100%; height: 500px;"></iframe>
+                    <div class="template-info">
+                        <h3>{{ $template->name }}</h3>
+                        <p>{{ $template->description }}</p>
+                    </div>
+                </div>
+                @endforeach
                 <div class="template-card">
                     <img src="https://via.placeholder.com/300x200" alt="Template Undangan Pernikahan" class="template-image">
                     <div class="template-info">

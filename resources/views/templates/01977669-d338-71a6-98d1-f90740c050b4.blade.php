@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500&family=Great+Vibes&display=swap" rel="stylesheet">
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
-    <link rel="stylesheet" href="{{ asset('assets/'.$template->id.'/style.css?v1') }}">
+    <link rel="stylesheet" href="{{ asset('assets/templates/'.$template->id.'/style.css?v1') }}">
     <style>
         
     </style>
@@ -94,7 +94,7 @@
                             @foreach ($story as $item)
                                 <div class="timeline-item">
                                     <div class="timeline-content">
-                                        <div class="timeline-date">{{ date('m Y', strtotime($item['date'])) }}</div>
+                                        <div class="timeline-date">{{ date('M Y', strtotime($item['date'])) }}</div>
                                         <h4 class="timeline-title">{{  $item['title']}}</h4>
                                         <p class="timeline-description">
                                             {{ $item['description']}} 
@@ -375,6 +375,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
-    <script src="{{ asset('assets/'.$template->id.'/script.js?v1') }}"></script>
+    <script src="{{ asset('assets/templates/'.$template->id.'/script.js?v1') }}"></script>
 </body>
 </html>

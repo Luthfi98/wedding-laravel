@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Setting;
+use App\Models\Template;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -9,12 +11,12 @@ use App\Http\Controllers\Cms\MenuController;
 use App\Http\Controllers\Cms\RoleController;
 use App\Http\Controllers\Cms\UserController;
 use App\Http\Controllers\Cms\ClientController;
+use App\Http\Controllers\Cms\SettingController;
 use App\Http\Controllers\Cms\LanguageController;
 use App\Http\Controllers\Cms\TemplateController;
 use App\Http\Controllers\Cms\DashboardController;
 use App\Http\Controllers\Cms\PermissionController;
 use App\Http\Controllers\Cms\LogActivityController;
-use App\Http\Controllers\Cms\SettingController;
 
 Route::get('/', function () {
     // $client = \App\Models\Client::firstOrFail();
@@ -60,11 +62,11 @@ Route::get('/', function () {
     //     'other' => $dataOther
     // ];
     // return view('templates.'.$template->id)->with($data);
-    $settings = \App\Models\Setting::whereIn('name', ['layouts_landing', 'logo_website', 'favicon_website', 'website_name'])->get()->keyBy('name');
+    $settings = Setting::where('status', 'active')->get()->keyBy('name');
+    $templates = Template::where('status', 'active')->get();
     $data = [
-        'logo' => $settings->get('logo_website')?->value,
-        'favicon' => $settings->get('favicon_website')?->value,
-        'name' => $settings->get('website_name')?->value
+        'settings' => $settings,
+        'templates' => $templates
     ];
     return view($settings->get('layouts_landing') ? str_replace(['.blade.php', 'views/'], '', $settings->get('layouts_landing')->value) : 'layouts.landing')->with($data);
 });
